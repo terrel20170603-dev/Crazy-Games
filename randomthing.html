@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crazy Game</title>
+    </head>
+    <canvas id="canvas" height=500 width="500"></canvas>
+    <body>
+        <script>
+            class Cloud{
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                }
+                draw(){
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(this.x,this.y,50,50);
+                }
+            }
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+            var speed = 1;
+            var loop_times = 0;
+            var textAnimating = false;
+            var textScale = 0;
+            var velocity = 12;
+            var gravity = -0.75;
+            ctx.fillStyle = "#45ecff";
+            ctx.fillRect(0,0,500,500);
+            var clouds = []
+            for (var i = 0; i < Math.floor(Math.random() * 50 + 30); i++) {
+                clouds.push(
+                    new Cloud(
+                        Math.floor(Math.random() * 450),
+                        Math.floor(Math.random() * 450)
+                    )
+                );
+            }
+            function loop(){
+                ctx.fillStyle = "#45ecff50";
+                ctx.fillRect(0,0,500,500);
+                for (var i = clouds.length - 1; i >= 0; i--) {
+                    var cloud = clouds[i];
+                    cloud.draw();
+                    cloud.x -= speed;
+                    if (cloud.x <= -50) {
+                        clouds.splice(i, 1);
+                        clouds.push(new Cloud(500, Math.floor(Math.random() * 450)));
+                    }
+                }
+                loop_times += 1
+                if (loop_times <= 100) {
+                    speed += 0.6;
+                } else {
+                    speed -= 0.6;
+                    if (speed < 1) {
+                        speed = 0;
+                        textAnimating = true;
+                    }
+                }
+                if(textAnimating){
+                    textScale += velocity;
+                    velocity += gravity;
+                    ctx.fillStyle = "white";
+                    ctx.font = "bold " + textScale + "px Arial";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText("by Terrel", 250, 250);
+                }
+                requestAnimationFrame(loop);
+            }
+            loop();
+        </script>
+    </body>
+</html>
